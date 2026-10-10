@@ -7,6 +7,8 @@
   --color-primary-contrast: #ffffff;
   --color-border: #d1d5db;
   --color-focus: #1d4ed8;
+  --color-primary-hover: #276a42;
+  --color-erro: #b91c1c;
 
   --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-size-sm: 0.875rem;
