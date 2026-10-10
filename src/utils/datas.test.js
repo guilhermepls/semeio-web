@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
+  dataPorExtenso,
   diaDaSemanaDoPrimeiro,
   diasDoMes,
   formatarData,
@@ -92,5 +93,11 @@ describe('diaDaSemanaDoPrimeiro', () => {
 describe('nomeDoMes', () => {
   it('escreve o mês por extenso em português', () => {
     expect(nomeDoMes('2026-10')).toBe('outubro de 2026')
+  })
+})
+
+describe('dataPorExtenso', () => {
+  it('escreve dia da semana, dia e mês', () => {
+    expect(dataPorExtenso('2026-10-10')).toBe('sábado, 10 de outubro')
   })
 })
