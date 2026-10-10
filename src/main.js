@@ -1,5 +1,6 @@
 import './styles/tokens.css'
 import './styles/base.css'
+import './styles/habitos.css'
+import { montarHabitos } from './ui/habitos.js'
 
-const app = document.querySelector('#app')
-app.innerHTML = '<h1>Semeio Hábitos</h1>'
+montarHabitos(document.querySelector('#app'))

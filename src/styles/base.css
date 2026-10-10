@@ -16,3 +16,14 @@ body {
   outline: 3px solid var(--color-focus);
   outline-offset: 2px;
 }
+
+.topo {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4) 0;
+}
+
+.topo h1 {
+  margin: 0;
+  font-size: var(--font-size-xl);
+}
