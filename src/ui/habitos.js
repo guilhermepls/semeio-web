@@ -91,6 +91,7 @@ export function montarHabitos(raiz) {
         await arquivarHabito(habito.id)
         if (editandoId === habito.id) sairDaEdicao()
         await desenharLista()
+        document.dispatchEvent(new CustomEvent('habitos:alterados'))
       },
     )
 
@@ -128,6 +129,7 @@ export function montarHabitos(raiz) {
     erro.textContent = ''
     sairDaEdicao()
     await desenharLista()
+    document.dispatchEvent(new CustomEvent('habitos:alterados'))
     campoNome.focus()
   })
 

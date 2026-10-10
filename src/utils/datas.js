@@ -44,3 +44,12 @@ export function nomeDoMes(mes) {
     year: 'numeric',
   }).format(new Date(ano, m - 1, 1))
 }
+
+export function dataPorExtenso(data) {
+  const [ano, m, dia] = data.split('-').map(Number)
+  return new Intl.DateTimeFormat('pt-BR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  }).format(new Date(ano, m - 1, dia))
+}
