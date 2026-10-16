@@ -2,14 +2,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const banco = vi.hoisted(() => ({ registros: [] }))
 
-vi.mock('./storage.js', () => ({
+vi.mock('../../src/data/storage.js', () => ({
   listarRegistros: async () => banco.registros,
   salvarRegistros: async (registros) => {
     banco.registros = registros
   },
 }))
 
-import { marcarHabito, registrosDoDia } from './registros.js'
+import { marcarHabito, registrosDoDia } from '../../src/data/registros.js'
 
 const DIA = '2026-10-15'
 const OUTRO_DIA = '2026-10-16'

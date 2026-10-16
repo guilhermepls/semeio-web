@@ -9,7 +9,7 @@ import {
   mesDe,
   mesSeguinte,
   nomeDoMes,
-} from './datas.js'
+} from '../../src/utils/datas.js'
 
 describe('formatarData', () => {
   it('formata com zeros à esquerda', () => {
