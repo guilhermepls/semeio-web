@@ -1,0 +1,35 @@
+.humor {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.humor legend {
+  padding: 0;
+  margin-bottom: var(--space-1);
+}
+
+.humor__dica {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.humor__opcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.humor__opcoes label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+}
+
+.humor__opcoes input {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: var(--color-primary);
+}
