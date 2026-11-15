@@ -5,7 +5,7 @@ import {
   listarAtivos,
 } from '../data/habitos.js'
 
-const ROTULO_TIPO = { foco: 'Foco do mês', baseline: 'Baseline' }
+const ROTULO_TIPO = { objetivo: 'Objetivo do mês', comum: 'Hábito comum' }
 
 export function montarHabitos(raiz) {
   const secao = document.createElement('section')
@@ -19,9 +19,9 @@ export function montarHabitos(raiz) {
         <input id="habito-nome" name="nome" type="text" maxlength="60" autocomplete="off" required />
       </div>
       <fieldset class="campo">
-        <legend>Tipo</legend>
-        <label><input type="radio" name="tipo" value="baseline" checked /> Baseline</label>
-        <label><input type="radio" name="tipo" value="foco" /> Foco do mês</label>
+        <legend>Tipo de hábito</legend>
+        <label><input type="radio" name="tipo" value="comum" checked /> Hábito comum</label>
+        <label><input type="radio" name="tipo" value="objetivo" /> Objetivo do mês</label>
       </fieldset>
       <p class="erro" role="alert"></p>
       <div class="habitos__acoes">
