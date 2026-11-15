@@ -1,7 +1,12 @@
-import { listarHabitos, salvarHabitos } from './storage.js'
+import {
+  listarHabitos,
+  listarRegistros,
+  salvarHabitos,
+  salvarRegistros,
+} from './storage.js'
 import { hoje, mesDe } from '../utils/datas.js'
 
-const TIPOS = ['foco', 'baseline']
+const TIPOS = ['objetivo', 'comum']
 
 function validar(habitos, habito) {
   if (!habito.nome) throw new Error('Informe o nome do hábito.')
@@ -15,12 +20,12 @@ function validar(habitos, habito) {
   if (outros.some((h) => h.nome.toLowerCase() === habito.nome.toLowerCase())) {
     throw new Error('Já existe um hábito com esse nome.')
   }
-  if (habito.tipo === 'foco') {
-    const focoAtual = outros.find(
-      (h) => h.tipo === 'foco' && h.mes === habito.mes,
+  if (habito.tipo === 'objetivo') {
+    const objetivoAtual = outros.find(
+      (h) => h.tipo === 'objetivo' && h.mes === habito.mes,
     )
-    if (focoAtual) {
-      throw new Error(`Este mês já tem um hábito de foco: "${focoAtual.nome}".`)
+    if (objetivoAtual) {
+      throw new Error(`Este mês já tem um objetivo: "${objetivoAtual.nome}".`)
     }
   }
 }
@@ -59,4 +64,14 @@ export async function arquivarHabito(id) {
   await salvarHabitos(
     habitos.map((h) => (h.id === id ? { ...h, arquivado: true } : h)),
   )
+}
+
+export async function excluirHabito(id) {
+  const habitos = await listarHabitos()
+  if (!habitos.some((h) => h.id === id)) {
+    throw new Error('Hábito não encontrado.')
+  }
+  const registros = await listarRegistros()
+  await salvarHabitos(habitos.filter((h) => h.id !== id))
+  await salvarRegistros(registros.filter((r) => r.habitoId !== id))
 }

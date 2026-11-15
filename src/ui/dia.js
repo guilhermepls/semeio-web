@@ -1,7 +1,8 @@
 import { buscarDia, LIMITE_MOMENTO, salvarDia } from '../data/dias.js'
 import { listarAtivos } from '../data/habitos.js'
 import { marcarHabito, registrosDoDia } from '../data/registros.js'
-import { dataPorExtenso, hoje, mesDe } from '../utils/datas.js'
+import { primeiroDiaPermitido } from '../data/validacao.js'
+import { dataPorExtenso, hoje } from '../utils/datas.js'
 import { criarSeletorHumor } from './humor.js'
 
 export function montarDia(raiz) {
@@ -45,7 +46,7 @@ export function montarDia(raiz) {
 
   function atualizarLimites() {
     const dataDeHoje = hoje()
-    campoData.min = `${mesDe(dataDeHoje)}-01`
+    campoData.min = primeiroDiaPermitido()
     campoData.max = dataDeHoje
     if (!campoData.value) campoData.value = dataDeHoje
   }
@@ -110,7 +111,7 @@ export function montarDia(raiz) {
 
   campoData.addEventListener('change', () => {
     if (!campoData.value || !campoData.checkValidity()) {
-      erro.textContent = 'Escolha uma data entre o dia 1 do mês e hoje.'
+      erro.textContent = 'Escolha uma data dos últimos 365 dias, até hoje.'
       campoData.value = hoje()
     } else {
       erro.textContent = ''
