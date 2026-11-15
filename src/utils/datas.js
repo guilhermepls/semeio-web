@@ -53,3 +53,8 @@ export function dataPorExtenso(data) {
     month: 'long',
   }).format(new Date(ano, m - 1, dia))
 }
+
+export function somarDias(data, n) {
+  const [ano, m, dia] = data.split('-').map(Number)
+  return formatarData(new Date(ano, m - 1, dia + n))
+}

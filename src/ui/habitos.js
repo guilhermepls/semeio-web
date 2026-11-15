@@ -2,6 +2,7 @@ import {
   arquivarHabito,
   criarHabito,
   editarHabito,
+  excluirHabito,
   listarAtivos,
 } from '../data/habitos.js'
 
@@ -69,6 +70,12 @@ export function montarHabitos(raiz) {
     return botao
   }
 
+  async function atualizarTudo(id) {
+    if (editandoId === id) sairDaEdicao()
+    await desenharLista()
+    document.dispatchEvent(new CustomEvent('habitos:alterados'))
+  }
+
   function criarItem(habito) {
     const item = document.createElement('li')
 
@@ -89,13 +96,25 @@ export function montarHabitos(raiz) {
       `Arquivar ${habito.nome}`,
       async () => {
         await arquivarHabito(habito.id)
-        if (editandoId === habito.id) sairDaEdicao()
-        await desenharLista()
-        document.dispatchEvent(new CustomEvent('habitos:alterados'))
+        await atualizarTudo(habito.id)
       },
     )
 
-    item.append(nome, tipo, editar, arquivar)
+    const excluir = criarBotao(
+      'Excluir',
+      `Excluir ${habito.nome}`,
+      async () => {
+        const confirmou = confirm(
+          `Excluir "${habito.nome}"? Isso apaga também todo o histórico dele. Para manter o histórico, use Arquivar.`,
+        )
+        if (!confirmou) return
+        await excluirHabito(habito.id)
+        await atualizarTudo(habito.id)
+      },
+    )
+    excluir.classList.add('botao--perigo')
+
+    item.append(nome, tipo, editar, arquivar, excluir)
     return item
   }
 

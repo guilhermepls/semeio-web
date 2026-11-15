@@ -96,9 +96,14 @@ describe('salvarDia', () => {
     ).rejects.toThrow('Não é possível marcar um dia futuro.')
   })
 
-  it('recusa dia de mês anterior', async () => {
+  it('aceita um dia do mês anterior', async () => {
+    await salvarDia('2026-09-30', { momento: 'x', humor: 3 })
+    expect((await buscarDia('2026-09-30')).humor).toBe(3)
+  })
+
+  it('recusa um dia fora dos últimos 365 dias', async () => {
     await expect(
-      salvarDia('2026-09-30', { momento: 'x', humor: 3 }),
-    ).rejects.toThrow('Só é possível marcar dias dentro do mês atual.')
+      salvarDia('2025-10-19', { momento: 'x', humor: 3 }),
+    ).rejects.toThrow('Só é possível consultar e editar os últimos 365 dias.')
   })
 })

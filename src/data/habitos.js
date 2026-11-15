@@ -1,4 +1,9 @@
-import { listarHabitos, salvarHabitos } from './storage.js'
+import {
+  listarHabitos,
+  listarRegistros,
+  salvarHabitos,
+  salvarRegistros,
+} from './storage.js'
 import { hoje, mesDe } from '../utils/datas.js'
 
 const TIPOS = ['objetivo', 'comum']
@@ -59,4 +64,14 @@ export async function arquivarHabito(id) {
   await salvarHabitos(
     habitos.map((h) => (h.id === id ? { ...h, arquivado: true } : h)),
   )
+}
+
+export async function excluirHabito(id) {
+  const habitos = await listarHabitos()
+  if (!habitos.some((h) => h.id === id)) {
+    throw new Error('Hábito não encontrado.')
+  }
+  const registros = await listarRegistros()
+  await salvarHabitos(habitos.filter((h) => h.id !== id))
+  await salvarRegistros(registros.filter((r) => r.habitoId !== id))
 }

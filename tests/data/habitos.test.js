@@ -1,11 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-const banco = vi.hoisted(() => ({ habitos: [] }))
+const banco = vi.hoisted(() => ({ habitos: [], registros: [] }))
 
 vi.mock('../../src/data/storage.js', () => ({
   listarHabitos: async () => banco.habitos,
   salvarHabitos: async (habitos) => {
     banco.habitos = habitos
+  },
+  listarRegistros: async () => banco.registros,
+  salvarRegistros: async (registros) => {
+    banco.registros = registros
   },
 }))
 
@@ -13,6 +17,7 @@ import {
   arquivarHabito,
   criarHabito,
   editarHabito,
+  excluirHabito,
   listarAtivos,
 } from '../../src/data/habitos.js'
 
@@ -29,6 +34,7 @@ function habito(sobrescrever = {}) {
 
 beforeEach(() => {
   banco.habitos = []
+  banco.registros = []
   vi.useFakeTimers()
   vi.setSystemTime(new Date(2026, 9, 20, 12, 0))
 })
@@ -201,5 +207,33 @@ describe('arquivarHabito', () => {
     await criarHabito({ nome: 'Correr', tipo: 'objetivo' })
     const ativos = await listarAtivos()
     expect(ativos.map((h) => h.nome)).toEqual(['Correr'])
+  })
+})
+
+describe('excluirHabito', () => {
+  it('apaga o hábito e os registros dele', async () => {
+    banco.habitos = [habito({ id: 'h1' }), habito({ id: 'h2', nome: 'Correr' })]
+    banco.registros = [
+      { data: '2026-10-15', habitoId: 'h1', feito: true },
+      { data: '2026-10-15', habitoId: 'h2', feito: true },
+    ]
+    await excluirHabito('h1')
+    expect(banco.habitos.map((h) => h.id)).toEqual(['h2'])
+    expect(banco.registros).toEqual([
+      { data: '2026-10-15', habitoId: 'h2', feito: true },
+    ])
+  })
+
+  it('libera o objetivo do mês', async () => {
+    banco.habitos = [habito({ tipo: 'objetivo' })]
+    await excluirHabito('h1')
+    await criarHabito({ nome: 'Correr', tipo: 'objetivo' })
+    expect(await listarAtivos()).toHaveLength(1)
+  })
+
+  it('recusa um id que não existe', async () => {
+    await expect(excluirHabito('nao-existe')).rejects.toThrow(
+      'Hábito não encontrado.',
+    )
   })
 })

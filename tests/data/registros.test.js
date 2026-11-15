@@ -61,9 +61,14 @@ describe('marcarHabito', () => {
     )
   })
 
-  it('recusa dia de mês anterior', async () => {
-    await expect(marcarHabito('2026-09-30', 'h1', true)).rejects.toThrow(
-      'Só é possível marcar dias dentro do mês atual.',
+  it('aceita um dia do mês anterior', async () => {
+    await marcarHabito('2026-09-30', 'h1', true)
+    expect(await registrosDoDia('2026-09-30')).toHaveLength(1)
+  })
+
+  it('recusa um dia fora dos últimos 365 dias', async () => {
+    await expect(marcarHabito('2025-10-19', 'h1', true)).rejects.toThrow(
+      'Só é possível consultar e editar os últimos 365 dias.',
     )
   })
 

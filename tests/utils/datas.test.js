@@ -9,6 +9,7 @@ import {
   mesDe,
   mesSeguinte,
   nomeDoMes,
+  somarDias,
 } from '../../src/utils/datas.js'
 
 describe('formatarData', () => {
@@ -99,5 +100,23 @@ describe('nomeDoMes', () => {
 describe('dataPorExtenso', () => {
   it('escreve dia da semana, dia e mês', () => {
     expect(dataPorExtenso('2026-10-10')).toBe('sábado, 10 de outubro')
+  })
+})
+
+describe('somarDias', () => {
+  it('soma dias dentro do mês', () => {
+    expect(somarDias('2026-10-10', 5)).toBe('2026-10-15')
+  })
+
+  it('vira o mês e o ano', () => {
+    expect(somarDias('2026-12-30', 3)).toBe('2027-01-02')
+  })
+
+  it('volta passando pelo 29 de fevereiro', () => {
+    expect(somarDias('2028-03-01', -1)).toBe('2028-02-29')
+  })
+
+  it('volta 365 dias', () => {
+    expect(somarDias('2026-10-20', -365)).toBe('2025-10-20')
   })
 })
