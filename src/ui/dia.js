@@ -140,7 +140,7 @@ export function montarDia(raiz) {
   })
 
   document.addEventListener('habitos:alterados', desenharLista)
-
+  document.addEventListener('pagina:aberta', desenharLista)
   atualizarLimites()
   desenharLista()
   carregarDia()

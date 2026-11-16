@@ -1,0 +1,84 @@
+.pular-link {
+  position: absolute;
+  top: -4rem;
+  left: var(--space-4);
+  z-index: 10;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.pular-link:focus {
+  top: var(--space-2);
+}
+
+.cabecalho {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cabecalho__faixa {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-6);
+  padding-block: var(--space-3);
+}
+
+.cabecalho__marca {
+  font-size: 1.375rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.cabecalho__nav {
+  display: flex;
+  flex: 1;
+  gap: var(--space-6);
+}
+
+.cabecalho__nav a {
+  padding: var(--space-3) var(--space-1);
+  border-bottom: 3px solid transparent;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.cabecalho__nav a:hover {
+  color: var(--color-text);
+}
+
+.cabecalho__nav a[aria-current='page'] {
+  border-bottom-color: var(--color-primary);
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+#conteudo {
+  flex: 1 0 auto;
+  padding-bottom: var(--space-8);
+}
+
+#conteudo:focus {
+  outline: none;
+}
+
+.pagina-titulo {
+  padding-top: var(--space-8);
+}
+
+.pagina-titulo h1 {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.rodape {
+  padding: var(--space-6) 0;
+  border-top: 1px solid var(--color-border);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
