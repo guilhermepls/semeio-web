@@ -75,3 +75,21 @@ export async function excluirHabito(id) {
   await salvarHabitos(habitos.filter((h) => h.id !== id))
   await salvarRegistros(registros.filter((r) => r.habitoId !== id))
 }
+
+export async function definirObjetivo(id) {
+  const habitos = await listarHabitos()
+  if (!habitos.some((h) => h.id === id)) {
+    throw new Error('Hábito não encontrado.')
+  }
+
+  const mes = mesDe(hoje())
+  await salvarHabitos(
+    habitos.map((h) => {
+      if (h.id === id) return { ...h, tipo: 'objetivo', mes }
+      if (!h.arquivado && h.tipo === 'objetivo' && h.mes === mes) {
+        return { ...h, tipo: 'comum' }
+      }
+      return h
+    }),
+  )
+}
