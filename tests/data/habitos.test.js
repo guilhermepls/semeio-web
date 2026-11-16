@@ -16,6 +16,7 @@ vi.mock('../../src/data/storage.js', () => ({
 import {
   arquivarHabito,
   criarHabito,
+  definirObjetivo,
   editarHabito,
   excluirHabito,
   listarAtivos,
@@ -233,6 +234,47 @@ describe('excluirHabito', () => {
 
   it('recusa um id que não existe', async () => {
     await expect(excluirHabito('nao-existe')).rejects.toThrow(
+      'Hábito não encontrado.',
+    )
+  })
+})
+
+describe('definirObjetivo', () => {
+  it('troca o objetivo do mês e o anterior vira comum', async () => {
+    banco.habitos = [
+      habito({ id: 'h1', nome: 'Meditar', tipo: 'objetivo' }),
+      habito({ id: 'h2', nome: 'Correr' }),
+    ]
+    await definirObjetivo('h2')
+    expect(banco.habitos.map((h) => [h.id, h.tipo])).toEqual([
+      ['h1', 'comum'],
+      ['h2', 'objetivo'],
+    ])
+  })
+
+  it('leva um hábito antigo para o mês atual', async () => {
+    banco.habitos = [habito({ mes: '2026-09' })]
+    await definirObjetivo('h1')
+    expect(banco.habitos[0]).toMatchObject({ tipo: 'objetivo', mes: '2026-10' })
+  })
+
+  it('não mexe em objetivos arquivados', async () => {
+    banco.habitos = [
+      habito({ id: 'h1', tipo: 'objetivo', arquivado: true }),
+      habito({ id: 'h2', nome: 'Correr' }),
+    ]
+    await definirObjetivo('h2')
+    expect(banco.habitos[0].tipo).toBe('objetivo')
+  })
+
+  it('mantém tudo igual se já é o objetivo do mês', async () => {
+    banco.habitos = [habito({ tipo: 'objetivo' })]
+    await definirObjetivo('h1')
+    expect(banco.habitos).toEqual([habito({ tipo: 'objetivo' })])
+  })
+
+  it('recusa um id que não existe', async () => {
+    await expect(definirObjetivo('nao-existe')).rejects.toThrow(
       'Hábito não encontrado.',
     )
   })

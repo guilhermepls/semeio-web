@@ -11,10 +11,28 @@
     <title>Semeio Hábitos</title>
   </head>
   <body>
-    <header class="topo">
-      <h1>Semeio Hábitos</h1>
-    </header>
-    <main id="app"></main>
+    <a class="pular-link" href="#conteudo">Pular para o conteúdo</a>
+    <header id="cabecalho" class="cabecalho"></header>
+    <main id="conteudo" class="conteudo" tabindex="-1">
+      <div id="pagina-hoje" data-pagina="hoje"></div>
+      <div id="pagina-calendario" data-pagina="calendario" hidden>
+        <div class="pagina-titulo">
+          <h1>Calendário</h1>
+          <p class="texto-apoio">
+            Escolha um dia para ver e ajustar seus hábitos, seu humor e seu
+            momento memorável.
+          </p>
+        </div>
+      </div>
+    </main>
+    <footer class="rodape">
+      <div class="conteudo">
+        <p>
+          Seus dados ficam apenas neste navegador. Nada é enviado para
+          servidores.
+        </p>
+      </div>
+    </footer>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

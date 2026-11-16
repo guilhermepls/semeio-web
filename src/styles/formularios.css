@@ -1,0 +1,57 @@
+.campo {
+  display: grid;
+  gap: var(--space-2);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.campo__rotulo {
+  padding: 0;
+  font-weight: 700;
+}
+
+.campo input[type='text'] {
+  min-height: 3rem;
+  padding: 0 var(--space-3);
+  border: 2px solid var(--color-border-input);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.campo input[type='text']:focus-visible {
+  border-color: var(--color-primary);
+}
+
+.opcao {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  cursor: pointer;
+}
+
+.opcao:has(input:checked) {
+  border-color: var(--color-primary);
+}
+
+.opcao:has(input:disabled) {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.opcao input {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0.125rem 0 0;
+  accent-color: var(--color-primary);
+}
+
+.opcao__titulo {
+  display: block;
+  font-weight: 700;
+}

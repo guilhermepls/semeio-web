@@ -1,0 +1,95 @@
+.dialogo {
+  width: min(32.5rem, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text);
+  overflow: auto;
+}
+
+.dialogo::backdrop {
+  background: rgb(23 33 27 / 0.65);
+}
+
+.dialogo__conteudo {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-6);
+}
+
+.dialogo__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.dialogo__titulo {
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+}
+
+.dialogo__corpo {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.dialogo__form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.dialogo__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+.acoes-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.acao {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+}
+
+.acao + .acao {
+  border-top: 1px solid var(--color-border);
+}
+
+.acao__texto {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.acao__titulo {
+  display: block;
+  font-weight: 700;
+}
+
+.zona-perigo {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-erro);
+  border-radius: var(--radius-md);
+}
+
+.zona-perigo__titulo {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-erro);
+}
+
+.zona-perigo .botao {
+  justify-self: start;
+}
