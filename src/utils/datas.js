@@ -58,3 +58,15 @@ export function somarDias(data, n) {
   const [ano, m, dia] = data.split('-').map(Number)
   return formatarData(new Date(ano, m - 1, dia + n))
 }
+
+export function podeRetrocederMes(mes, primeiroDia) {
+  return mesAnterior(mes) >= mesDe(primeiroDia)
+}
+
+export function podeAvancarMes(mes, dataHoje) {
+  return mes < mesDe(dataHoje)
+}
+
+export function diaEstaNoIntervalo(data, primeiroDia, dataHoje) {
+  return data >= primeiroDia && data <= dataHoje
+}
