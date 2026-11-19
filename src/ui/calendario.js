@@ -14,7 +14,7 @@ import {
 } from '../utils/datas.js'
 import { icones } from './icones.js'
 
-export function montarCalendario(raiz) {
+export function montarCalendario(raiz, opcoes = {}) {
   const secao = document.createElement('section')
   secao.className = 'calendario'
   secao.setAttribute('aria-labelledby', 'calendario-titulo')
@@ -57,12 +57,29 @@ export function montarCalendario(raiz) {
   const grade = secao.querySelector('.calendario__grade')
 
   let mesExibido = mesDe(hoje())
+  let diaSelecionado = null
+
+  function selecionarDia(dia) {
+    diaSelecionado = dia
+    for (const celula of grade.querySelectorAll('.calendario__dia')) {
+      const ehEsse = celula.dataset.data === dia
+      celula.classList.toggle('calendario__dia--selecionado', ehEsse)
+      if (ehEsse) {
+        celula.setAttribute('aria-selected', 'true')
+      } else {
+        celula.removeAttribute('aria-selected')
+      }
+    }
+    opcoes.aoSelecionarDia?.(dia)
+  }
 
   function criarElementoDia(dia, dataHoje, limite) {
-    const el = document.createElement('div')
+    const el = document.createElement('button')
+    el.type = 'button'
     const numero = Number(dia.split('-')[2])
     const ehHoje = dia === dataHoje
     const permitido = diaEstaNoIntervalo(dia, limite, dataHoje)
+    const selecionado = dia === diaSelecionado
 
     el.className = 'calendario__dia'
     el.setAttribute('role', 'gridcell')
@@ -73,9 +90,16 @@ export function montarCalendario(raiz) {
       el.classList.add('calendario__dia--hoje')
       rotulo += ', hoje'
     }
+    if (selecionado) {
+      el.classList.add('calendario__dia--selecionado')
+      el.setAttribute('aria-selected', 'true')
+    }
     if (!permitido) {
       el.classList.add('calendario__dia--desabilitado')
+      el.disabled = true
       el.setAttribute('aria-disabled', 'true')
+    } else {
+      el.addEventListener('click', () => selecionarDia(dia))
     }
 
     el.setAttribute('aria-label', rotulo)
@@ -136,4 +160,18 @@ export function montarCalendario(raiz) {
   })
 
   atualizar()
+
+  return {
+    selecionarDia,
+    desmarcarSelecao() {
+      diaSelecionado = null
+      for (const celula of grade.querySelectorAll('.calendario__dia')) {
+        celula.classList.remove('calendario__dia--selecionado')
+        celula.removeAttribute('aria-selected')
+      }
+    },
+    obterDiaSelecionado() {
+      return diaSelecionado
+    },
+  }
 }

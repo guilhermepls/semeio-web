@@ -14,10 +14,24 @@ import './styles/dia.css'
 import './styles/humor.css'
 import { montarCabecalho } from './ui/cabecalho.js'
 import { montarCalendario } from './ui/calendario.js'
+import { montarDia } from './ui/dia.js'
 import { montarHoje } from './ui/hoje.js'
 import { iniciarRotas } from './ui/rotas.js'
 
 montarCabecalho(document.querySelector('#cabecalho'))
 montarHoje(document.querySelector('#pagina-hoje'))
-montarCalendario(document.querySelector('#pagina-calendario'))
+
+const raizCalendario = document.querySelector('#pagina-calendario')
+let detalheApi
+const calendarioApi = montarCalendario(raizCalendario, {
+  aoSelecionarDia(data) {
+    detalheApi?.carregar(data)
+  },
+})
+detalheApi = montarDia(raizCalendario, {
+  aoFechar() {
+    calendarioApi?.desmarcarSelecao()
+  },
+})
+
 iniciarRotas()
