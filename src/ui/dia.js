@@ -1,23 +1,35 @@
 import { buscarDia, LIMITE_MOMENTO, salvarDia } from '../data/dias.js'
 import { listarAtivos } from '../data/habitos.js'
 import { marcarHabito, registrosDoDia } from '../data/registros.js'
-import { primeiroDiaPermitido } from '../data/validacao.js'
-import { dataPorExtenso, hoje } from '../utils/datas.js'
+import { dataPorExtenso } from '../utils/datas.js'
 import { criarSeletorHumor } from './humor.js'
+import { icones } from './icones.js'
 
-export function montarDia(raiz) {
+export function montarDia(raiz, opcoes = {}) {
   const secao = document.createElement('section')
-  secao.className = 'dia'
+  secao.className = 'dia cartao'
   secao.setAttribute('aria-labelledby', 'dia-titulo')
+  secao.hidden = true
   secao.innerHTML = `
-    <h2 id="dia-titulo">Marcar o dia</h2>
-    <div class="dia__data">
-      <label for="dia-data">Data</label>
-      <input id="dia-data" type="date" />
+    <div class="dia__cabecalho">
+      <div>
+        <h2 id="dia-titulo" class="dia__titulo">Detalhes do dia</h2>
+        <p class="dia__extenso" aria-live="polite"></p>
+      </div>
+      <button
+        type="button"
+        class="icone-botao dia__fechar"
+        aria-label="Voltar ao calendário"
+        title="Voltar ao calendário"
+      >
+        ${icones.fechar}
+      </button>
     </div>
-    <p class="dia__extenso" aria-live="polite"></p>
     <p class="erro" role="alert"></p>
-    <ul class="dia__lista"></ul>
+    <div class="dia__secao-habitos">
+      <h3 class="dia__subtitulo">Hábitos</h3>
+      <ul class="dia__lista"></ul>
+    </div>
     <form class="dia__registro" novalidate>
       <div class="dia__campo">
         <label for="dia-momento">Momento memorável</label>
@@ -31,8 +43,8 @@ export function montarDia(raiz) {
   `
   raiz.append(secao)
 
-  const campoData = secao.querySelector('#dia-data')
   const extenso = secao.querySelector('.dia__extenso')
+  const botaoFechar = secao.querySelector('.dia__fechar')
   const erro = secao.querySelector('.erro')
   const lista = secao.querySelector('.dia__lista')
   const form = secao.querySelector('.dia__registro')
@@ -44,20 +56,15 @@ export function montarDia(raiz) {
   secao.querySelector('.dia__humor').append(humor.elemento)
   campoMomento.maxLength = LIMITE_MOMENTO
 
-  function atualizarLimites() {
-    const dataDeHoje = hoje()
-    campoData.min = primeiroDiaPermitido()
-    campoData.max = dataDeHoje
-    if (!campoData.value) campoData.value = dataDeHoje
-  }
+  let dataAtual = null
 
   function criarItem(habito, data, feito) {
     const item = document.createElement('li')
     const rotulo = document.createElement('label')
-
     const caixa = document.createElement('input')
     caixa.type = 'checkbox'
     caixa.checked = feito
+
     caixa.addEventListener('change', async () => {
       try {
         await marcarHabito(data, habito.id, caixa.checked)
@@ -76,21 +83,16 @@ export function montarDia(raiz) {
     return item
   }
 
-  async function desenharLista() {
-    atualizarLimites()
-    const data = campoData.value
-    extenso.textContent = dataPorExtenso(data)
-
+  async function desenharHabitos(data) {
     const [habitos, registros] = await Promise.all([
       listarAtivos(),
       registrosDoDia(data),
     ])
 
     lista.replaceChildren()
-
     if (habitos.length === 0) {
       const vazio = document.createElement('li')
-      vazio.textContent = 'Cadastre um hábito para começar a marcar.'
+      vazio.textContent = 'Nenhum hábito cadastrado para este dia.'
       lista.append(vazio)
       return
     }
@@ -101,32 +103,39 @@ export function montarDia(raiz) {
     }
   }
 
-  async function carregarDia() {
-    const dia = await buscarDia(campoData.value)
-    campoMomento.value = dia.momento
-    humor.definir(dia.humor)
+  async function carregar(data) {
+    dataAtual = data
+    extenso.textContent = dataPorExtenso(data)
+    erro.textContent = ''
     erroRegistro.textContent = ''
     aviso.textContent = ''
+
+    await desenharHabitos(data)
+
+    const dia = await buscarDia(data)
+    campoMomento.value = dia.momento || ''
+    humor.definir(dia.humor)
+
+    secao.hidden = false
+    secao.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
   }
 
-  campoData.addEventListener('change', () => {
-    if (!campoData.value || !campoData.checkValidity()) {
-      erro.textContent = 'Escolha uma data dos últimos 365 dias, até hoje.'
-      campoData.value = hoje()
-    } else {
-      erro.textContent = ''
-    }
-    desenharLista()
-    carregarDia()
-  })
+  function fechar() {
+    secao.hidden = true
+    dataAtual = null
+    opcoes.aoFechar?.()
+  }
+
+  botaoFechar.addEventListener('click', fechar)
 
   form.addEventListener('submit', async (evento) => {
     evento.preventDefault()
+    if (!dataAtual) return
     aviso.textContent = ''
     erroRegistro.textContent = ''
 
     try {
-      await salvarDia(campoData.value, {
+      await salvarDia(dataAtual, {
         momento: campoMomento.value,
         humor: humor.obter(),
       })
@@ -139,9 +148,23 @@ export function montarDia(raiz) {
     aviso.textContent = 'Dia salvo.'
   })
 
-  document.addEventListener('habitos:alterados', desenharLista)
-  document.addEventListener('pagina:aberta', desenharLista)
-  atualizarLimites()
-  desenharLista()
-  carregarDia()
+  document.addEventListener('habitos:alterados', () => {
+    if (dataAtual && !secao.hidden) {
+      desenharHabitos(dataAtual)
+    }
+  })
+
+  document.addEventListener('pagina:aberta', (evento) => {
+    if (evento.detail !== 'calendario') {
+      fechar()
+    }
+  })
+
+  return {
+    carregar,
+    fechar,
+    obterDataAtual() {
+      return dataAtual
+    },
+  }
 }
