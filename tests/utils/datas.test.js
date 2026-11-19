@@ -9,6 +9,9 @@ import {
   mesDe,
   mesSeguinte,
   nomeDoMes,
+  podeAvancarMes,
+  podeRetrocederMes,
+  diaEstaNoIntervalo,
   somarDias,
 } from '../../src/utils/datas.js'
 
@@ -118,5 +121,49 @@ describe('somarDias', () => {
 
   it('volta 365 dias', () => {
     expect(somarDias('2026-10-20', -365)).toBe('2025-10-20')
+  })
+})
+
+describe('podeRetrocederMes', () => {
+  it('permite retroceder quando o mês anterior contém o primeiro dia permitido', () => {
+    expect(podeRetrocederMes('2026-11', '2025-11-19')).toBe(true)
+    expect(podeRetrocederMes('2025-12', '2025-11-19')).toBe(true)
+  })
+
+  it('impede retroceder quando o mês anterior é anterior ao primeiro dia permitido', () => {
+    expect(podeRetrocederMes('2025-11', '2025-11-19')).toBe(false)
+  })
+})
+
+describe('podeAvancarMes', () => {
+  it('permite avançar se o mês for anterior ao mês atual', () => {
+    expect(podeAvancarMes('2026-10', '2026-11-19')).toBe(true)
+  })
+
+  it('impede avançar se já estiver no mês atual', () => {
+    expect(podeAvancarMes('2026-11', '2026-11-19')).toBe(false)
+  })
+})
+
+describe('diaEstaNoIntervalo', () => {
+  it('aceita dias entre o limite inicial e hoje', () => {
+    expect(diaEstaNoIntervalo('2025-11-19', '2025-11-19', '2026-11-19')).toBe(
+      true,
+    )
+    expect(diaEstaNoIntervalo('2026-06-15', '2025-11-19', '2026-11-19')).toBe(
+      true,
+    )
+    expect(diaEstaNoIntervalo('2026-11-19', '2025-11-19', '2026-11-19')).toBe(
+      true,
+    )
+  })
+
+  it('recusa dias anteriores ao limite ou futuros', () => {
+    expect(diaEstaNoIntervalo('2025-11-18', '2025-11-19', '2026-11-19')).toBe(
+      false,
+    )
+    expect(diaEstaNoIntervalo('2026-11-20', '2025-11-19', '2026-11-19')).toBe(
+      false,
+    )
   })
 })
